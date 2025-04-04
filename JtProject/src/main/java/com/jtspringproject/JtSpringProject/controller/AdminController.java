@@ -26,6 +26,8 @@ import com.jtspringproject.JtSpringProject.models.User;
 import com.jtspringproject.JtSpringProject.services.categoryService;
 import com.jtspringproject.JtSpringProject.services.productService;
 import com.jtspringproject.JtSpringProject.services.userService;
+import com.jtspringproject.JtSpringProject.factory.ProductFactory;
+
 
 @Controller
 @RequestMapping("/admin")
@@ -77,14 +79,8 @@ public class AdminController {
 	@PostMapping("/categories")
 	public String addCategory(@RequestParam("categoryname") String category_name)
 	{
-		System.out.println(category_name);
-		
-		Category category =  this.categoryService.addCategory(category_name);
-		if(category.getName().equals(category_name)) {
-			return "redirect:categories";
-		}else {
-			return "redirect:categories";
-		}
+		Category category = this.categoryService.addCategory(category_name);
+		return "redirect:categories";
 	}
 	
 	@GetMapping("categories/delete")
@@ -127,18 +123,11 @@ public class AdminController {
 
 	@RequestMapping(value = "products/add",method=RequestMethod.POST)
 	public String addProduct(@RequestParam("name") String name,@RequestParam("categoryid") int categoryId ,@RequestParam("price") int price,@RequestParam("weight") int weight, @RequestParam("quantity")int quantity,@RequestParam("description") String description,@RequestParam("productImage") String productImage) {
-		System.out.println(categoryId);
 		Category category = this.categoryService.getCategory(categoryId);
-		Product product = new Product();
-		product.setId(categoryId);
-		product.setName(name);
-		product.setCategory(category);
-		product.setDescription(description);
-		product.setPrice(price);
-		product.setImage(productImage);
-		product.setWeight(weight);
-		product.setQuantity(quantity);
+
+		Product product = ProductFactory.createProduct(name, price, quantity, weight, description, productImage, category);
 		this.productService.addProduct(product);
+
 		return "redirect:/admin/products";
 	}
 

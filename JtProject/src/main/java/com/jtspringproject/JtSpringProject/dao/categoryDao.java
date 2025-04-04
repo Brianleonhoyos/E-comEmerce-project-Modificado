@@ -21,15 +21,18 @@ public class categoryDao {
 
 	@Transactional
 	public Category addCategory(String name) {
-		Category category = new Category();
-		category.setName(name);
+		Category category = new Category.Builder()
+				.setName(name)
+				.build();
 		this.sessionFactory.getCurrentSession().saveOrUpdate(category);
 		return category;
 	}
 
 	@Transactional
 	public List<Category> getCategories() {
-		return this.sessionFactory.getCurrentSession().createQuery("from CATEGORY").list();
+		return this.sessionFactory.getCurrentSession()
+				.createQuery("from CATEGORY", Category.class)
+				.list();
 	}
 
 	@Transactional

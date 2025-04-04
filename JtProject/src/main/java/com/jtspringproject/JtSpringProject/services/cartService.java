@@ -10,19 +10,21 @@ import java.util.List;
 
 @Service
 public class cartService {
+
     @Autowired
     private cartDao cartDao;
+
+    @Autowired
+    public cartService(cartDao cartDao) {
+        this.cartDao = cartDao;
+    }
 
     public Cart addCart(Cart cart) {
         return cartDao.addCart(cart);
     }
 
-    //    public Cart getCart(int id)
-//    {
-//        return cartDao.getCart(id);
-//    }
     public List<Cart> getCarts() {
-        return this.cartDao.getCarts();
+        return cartDao.getCarts();
     }
 
     public void updateCart(Cart cart) {
@@ -33,9 +35,7 @@ public class cartService {
         cartDao.deleteCart(cart);
     }
 
-//    pubiic List<Cart> getCartByUserId(int customer_id){
-//        return cartDao.getCartsByCustomerID(customer_id);
-//    }
-
-
+    public Cart getCartById(int Id) {
+        return cartDao.getCartById(Id);
+    }
 }

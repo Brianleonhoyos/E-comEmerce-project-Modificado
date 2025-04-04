@@ -23,8 +23,7 @@ public class userService {
 		try {
 			return this.userDao.saveUser(user);
 		} catch (DataIntegrityViolationException e) {
-			// handle unique constraint violation, e.g., by throwing a custom exception
-			throw new RuntimeException("Add user error");
+			throw new RuntimeException("Add user error: " + e.getMessage());
 		}
 	}
 	
@@ -37,6 +36,26 @@ public class userService {
 	}
 
 	public User getUserByUsername(String username) {
-	        return userDao.getUserByUsername(username);
-	    }
+		return userDao.getUserByUsername(username);
+	}
+
+	public User createNormalUser(String username, String email, String password, String address) {
+		return new User.Builder()
+				.setUsername(username)
+				.setEmail(email)
+				.setPassword(password)
+				.setAddress(address)
+				.setRole("ROLE_NORMAL")
+				.build();
+	}
+
+	public User createAdminUser(String username, String email, String password, String address) {
+		return new User.Builder()
+				.setUsername(username)
+				.setEmail(email)
+				.setPassword(password)
+				.setAddress(address)
+				.setRole("ROLE_ADMIN")
+				.build();
+	}
 }

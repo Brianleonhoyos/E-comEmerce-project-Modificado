@@ -7,51 +7,35 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 
 @Repository
 public class cartProductDao {
-    @Autowired
-    private SessionFactory sessionFactory;
+    @PersistenceContext
+    private EntityManager entityManager;
 
-    public void setSessionFactory(SessionFactory sf) {
-        this.sessionFactory = sf;
+    public void addCartProduct(CartProduct cartProduct) {
+        entityManager.persist(cartProduct);
     }
 
-    @Transactional
-    public CartProduct addCartProduct(CartProduct cartProduct) {
-        this.sessionFactory.getCurrentSession().save(cartProduct);
-        return cartProduct;
-    }
-
-    @Transactional
     public List<CartProduct> getCartProducts() {
-        return this.sessionFactory.getCurrentSession().createQuery("from CART_PRODUCT ").list();
+        String hql = "FROM CART_PRODUCT";
+        return entityManager.createQuery(hql, CartProduct.class).getResultList();
     }
 
-    @Transactional
-    public List<Product> getProductByCartID(Integer cart_id) {
-        String sql = "SELECT product_id FROM cart_product WHERE cart_id = :cart_id";
-        List<Integer> productIds = this.sessionFactory.getCurrentSession()
-                .createNativeQuery(sql)
-                .setParameter("cart_id", cart_id)
-                .list();
-
-        sql = "SELECT * FROM product WHERE id IN (:product_ids)";
-        return this.sessionFactory.getCurrentSession()
-                .createNativeQuery(sql, Product.class)
-                .setParameterList("product_ids", productIds)
-                .list();
-    }
-
-    @Transactional
     public void updateCartProduct(CartProduct cartProduct) {
-        this.sessionFactory.getCurrentSession().update(cartProduct);
+        entityManager.merge(cartProduct);
     }
 
-    @Transactional
     public void deleteCartProduct(CartProduct cartProduct) {
-        this.sessionFactory.getCurrentSession().delete(cartProduct);
+        CartProduct managedCartProduct = entityManager.merge(cartProduct);
+        entityManager.remove(managedCartProduct);
+    }
+
+    // Método adicional útil
+    public CartProduct getCartProductById(int id) {
+        return entityManager.find(CartProduct.class, id);
     }
 }

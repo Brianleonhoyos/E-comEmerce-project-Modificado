@@ -99,13 +99,17 @@ public class UserController{
 		boolean exists = this.userService.checkUserExists(user.getUsername());
 
 		if(!exists) {
-			System.out.println(user.getEmail());
-			user.setRole("ROLE_NORMAL");
-			this.userService.addUser(user);
+			User newUser = this.userService.createNormalUser(
+					user.getUsername(),
+					user.getEmail(),
+					user.getPassword(),
+					user.getAddress()
+			);
 
-			System.out.println("New user created: " + user.getUsername());
-			ModelAndView mView = new ModelAndView("userLogin");
-			return mView;
+			this.userService.addUser(newUser);
+			System.out.println("New user created: " + newUser.getUsername());
+
+			return new ModelAndView("userLogin");
 		} else {
 			System.out.println("New user not created - username taken: " + user.getUsername());
 			ModelAndView mView = new ModelAndView("register");

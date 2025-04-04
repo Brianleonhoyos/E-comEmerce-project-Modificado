@@ -15,8 +15,8 @@ public class categoryService {
 	@Autowired
 	private categoryDao categoryDao;
 	
-	public Category addCategory(String name) {
-		return this.categoryDao.addCategory(name);
+	public Category addCategory(String category_name) {
+		return this.categoryDao.addCategory(category_name);
 	}
 	
 	public List<Category> getCategories(){

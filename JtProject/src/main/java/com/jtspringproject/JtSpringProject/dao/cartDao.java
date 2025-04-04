@@ -8,43 +8,36 @@ import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 @Repository
 public class cartDao {
-    @Autowired
-    private SessionFactory sessionFactory;
 
-    public void setSessionFactory(SessionFactory sf) {
-        this.sessionFactory = sf;
-    }
+    @PersistenceContext
+    private EntityManager entityManager;
 
-    @Transactional
     public Cart addCart(Cart cart) {
-        this.sessionFactory.getCurrentSession().save(cart);
+        entityManager.persist(cart);
         return cart;
     }
 
-    @Transactional
     public List<Cart> getCarts() {
-        return this.sessionFactory.getCurrentSession().createQuery("from CART").list();
+        String hql = "FROM CART";
+        return entityManager.createQuery(hql, Cart.class).getResultList();
     }
 
-//    @Transactional
-//    public List<Cart> getCartsByCustomerID(Integer customer_id) {
-//        String hql = "from CART where CART.customer_id = :customer_id";
-//        return this.sessionFactory.getCurrentSession()
-//                .createQuery(hql, Cart.class)
-//                .setParameter("customer_id", customer_id)
-//                .list();
-//    }
-
-    @Transactional
     public void updateCart(Cart cart) {
-        this.sessionFactory.getCurrentSession().update(cart);
+        entityManager.merge(cart);
     }
 
-    @Transactional
     public void deleteCart(Cart cart) {
-        this.sessionFactory.getCurrentSession().delete(cart);
+        Cart managedCart = entityManager.merge(cart);
+        entityManager.remove(managedCart);
+    }
+
+    // Método adicional opcional
+    public Cart getCartById(int id) {
+        return entityManager.find(Cart.class, id);
     }
 }

@@ -10,28 +10,41 @@ import com.jtspringproject.JtSpringProject.models.Product;
 
 @Service
 public class productService {
+
+	@Autowired
+	private static productService instance;
+
 	@Autowired
 	private productDao productDao;
-	
-	public List<Product> getProducts(){
-		return this.productDao.getProducts();
+
+	private productService() {
+		productDao = new productDao();
 	}
-	
-	public Product addProduct(Product product) {
-		return this.productDao.addProduct(product);
+
+	public static synchronized productService getInstance() {
+		if (instance == null) {
+			instance = new productService();
+		}
+		return instance;
 	}
-	
+
+	public void addProduct(Product product) {
+		productDao.addProduct(product);
+	}
+
 	public Product getProduct(int id) {
-		return this.productDao.getProduct(id);
+		return productDao.getProduct(id);
 	}
 
-	public Product updateProduct(int id,Product product){
-		product.setId(id);
-		return this.productDao.updateProduct(product);
-	}
-	public boolean deleteProduct(int id) {
-		return this.productDao.deletProduct(id);
+	public List<Product> getProducts() {
+		return productDao.getProducts();
 	}
 
-	
+	public void deleteProduct(int id) {
+		productDao.deleteProduct(id);
+	}
+
+	public void updateProduct(Product product) {
+		productDao.updateProduct(product);
+	}
 }

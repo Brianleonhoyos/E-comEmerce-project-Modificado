@@ -14,7 +14,48 @@ public class Category {
 	private int id;
 	
 	private String name;
-	
+
+	private Category() {}
+
+	// Builder para Category
+	public static class Builder {
+		private final Category category;
+
+		public Builder() {
+			category = new Category();
+		}
+
+		public Builder setId(int id) {
+			category.id = id;
+			return this;
+		}
+
+		public Builder setName(String name) {
+			category.name = name;
+			return this;
+		}
+
+		public Category build() {
+			return category;
+		}
+	}
+
+	// Factory Method para Category
+	public static class CategoryFactory {
+		public static Category createCategory(String name) {
+			return new Category.Builder()
+					.setName(name)
+					.build();
+		}
+
+		public static Category updateCategory(int id, String name) {
+			return new Category.Builder()
+					.setId(id)
+					.setName(name)
+					.build();
+		}
+	}
+
 	public int getId() {
 		return id;
 	}
@@ -30,5 +71,4 @@ public class Category {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
 }

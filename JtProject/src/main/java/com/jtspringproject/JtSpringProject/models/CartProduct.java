@@ -20,13 +20,30 @@ public class CartProduct {
     @JoinTable(name="product_id")
     private Product product;
 
+    public CartProduct() {}
 
-    public CartProduct() {
-        product = null;
-    }
     public CartProduct(Cart cart, Product product) {
-        this.cart=cart;
+        this.cart = cart;
         this.product = product;
+    }
+
+    public static class Builder {
+        private Cart cart;
+        private Product product;
+
+        public Builder setCart(Cart cart) {
+            this.cart = cart;
+            return this;
+        }
+
+        public Builder setProduct(Product product) {
+            this.product = product;
+            return this;
+        }
+
+        public CartProduct build() {
+            return new CartProduct(cart, product);
+        }
     }
 
     public int getId() {
@@ -44,6 +61,7 @@ public class CartProduct {
     public void setCart(Cart cart) {
         this.cart = cart;
     }
+
     public Product getProduct() {
         return product;
     }

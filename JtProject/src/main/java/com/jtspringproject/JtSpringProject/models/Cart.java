@@ -12,19 +12,26 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @ManyToOne
-    @JoinColumn(name="customer_id")
-    private User customer;
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<CartProduct> cartProducts = new ArrayList<>();
 
-//    @ManyToMany
-//    @JoinTable(
-//            joinColumns = @JoinColumn(name = "cart_id"),
-//            inverseJoinColumns = @JoinColumn(name = "product_id")
-//    )
-//    private List<Product> products;
+    public Cart() {}
 
+    public Cart(List<CartProduct> cartProducts) {
+        this.cartProducts = cartProducts;
+    }
 
-    public Cart() {
+    public static class Builder {
+        private List<CartProduct> cartProducts = new ArrayList<>();
+
+        public Builder setCartProducts(List<CartProduct> cartProducts) {
+            this.cartProducts = cartProducts;
+            return this;
+        }
+
+        public Cart build() {
+            return new Cart(cartProducts);
+        }
     }
 
     public int getId() {
@@ -35,38 +42,11 @@ public class Cart {
         this.id = id;
     }
 
-
-    public User getCustomer() {
-        return customer;
+    public List<CartProduct> getCartProducts() {
+        return cartProducts;
     }
 
-    public void setCustomer(User customer) {
-        this.customer = customer;
+    public void setCartProducts(List<CartProduct> cartProducts) {
+        this.cartProducts = cartProducts;
     }
-
-//    public List<Product> getProducts() {
-//        return products;
-//    }
-
-//    public List<Product> getProductsByUser(int customer_id ) {
-//        List<Product> userProducts = new ArrayList<Product>();
-//        for (Product product : products) {
-//            if (product.getCustomer().getId() == customer_id) {
-//                userProducts.add(product);
-//            }
-//        }
-//        return userProducts;
-//    }
-
-//    public void setProducts(List<Product> products) {
-//        this.products = products;
-//    }
-
-//    public void addProduct(Product product) {
-//        products.add(product);
-//    }
-//
-//    public void removeProduct(Product product) {
-//        products.remove(product);
-//    }
 }

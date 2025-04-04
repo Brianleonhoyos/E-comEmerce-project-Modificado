@@ -16,22 +16,29 @@ public class Product {
 	@Column(name = "product_id")
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private int id;
-	
 	private String name;
-	
 	private String image;
-	
 	@OneToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "category_id",referencedColumnName = "category_id")
 	private Category category;
-	
 	private int quantity;
-	
 	private int price;
-	
 	private int weight;
-	
 	private String description;
+	@ManyToOne
+    @JoinColumn(name = "customer_id")
+    private User customer;
+
+	private Product(Builder builder) {
+		this.id = builder.id;
+		this.name = builder.name;
+		this.price = builder.price;
+		this.quantity = builder.quantity;
+		this.weight = builder.weight;
+		this.description = builder.description;
+		this.image = builder.image;
+		this.category = builder.category;
+	}
 
 	public int getId() {
 		return id;
@@ -56,7 +63,6 @@ public class Product {
 	public void setImage(String image) {
 		this.image = image;
 	}
-
 
 	public Category getCategory() {
 		return category;
@@ -97,10 +103,59 @@ public class Product {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-	
-	@ManyToOne
-    @JoinColumn(name = "customer_id")
-    private User customer;
-	
-	
+
+	public User getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(User customer) {
+		this.customer = customer;
+	}
+
+	public static class Builder {
+		private int id;
+		private String name;
+		private int price;
+		private int quantity;
+		private int weight;
+		private String description;
+		private String image;
+		private Category category;
+
+		public Builder setId(int id) {
+			this.id = id; return this;
+		}
+
+		public Builder setName(String name) {
+			this.name = name; return this;
+		}
+
+		public Builder setPrice(int price) {
+			this.price = price; return this;
+		}
+
+		public Builder setQuantity(int quantity) {
+			this.quantity = quantity; return this;
+		}
+
+		public Builder setWeight(int weight) {
+			this.weight = weight; return this;
+		}
+
+		public Builder setDescription(String description) {
+			this.description = description; return this;
+		}
+
+		public Builder setImage(String image) {
+			this.image = image; return this;
+		}
+
+		public Builder setCategory(Category category) {
+			this.category = category; return this;
+		}
+
+		public Product build() {
+			return new Product(this);
+		}
+	}
 }
